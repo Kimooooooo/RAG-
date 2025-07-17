@@ -13,7 +13,9 @@ from langchain.storage import LocalFileStore, create_kv_docstore
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain.retrievers import ContextualCompressionRetriever
+from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain.retrievers.document_compressors import LLMChainExtractor, DocumentCompressorPipeline
+from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 import os
 from example import few_shot_examples
 
@@ -44,12 +46,7 @@ def chain_prompt(vectorstore):
         MessagesPlaceholder(variable_name='history'),
         ('human',"질문:{question}\n\n참고 문서:\n{context}")
     ])
-    if memory is None:
-        memory = ConversationBufferMemory(
-            return_messages=True,
-            memory_key='history',
-            input_key='question'
-        )
+    
 
     retriever = vectorstore.as_retriever(search_kwargs={'k':5})
 
@@ -57,30 +54,32 @@ def chain_prompt(vectorstore):
 
     compressor_retriever = ContextualCompressionRetriever(
         base_retriever=retriever,
-        compressor = compressor
+        base_compressor = compressor
     )
 
-    chain =ConversationalRetrievalChain.from_llm(
-        llm = llm,
-        retriever = retriever,
-        memory = memory,
-        output_parser = output_parser,
-        combine_docs_chain_kwargs ={
-            'prompt':prompt
-        }
-    
+    chain = prompt | llm | output_parser
+
+    chain_with_memory = RunnableWithMessageHistory(chain,lambda session_id:ConversationBufferMemory(
+        memory_key='history',
+        return_messages=True,
+        chat_memory=StreamlitChatMessageHistory(key=f"chat_history_{session_id}")
+    ),
+    input_messages_key = 'question', # 사용자 입력키
+    history_messages_key = 'history'
     )
-    
-    return chain ,compressor_retriever
+    return chain_with_memory ,compressor_retriever
 
-vectorstore = load_vector_store()
-chain = chain_prompt(vectorstore)
+def classify_worldview(description: str) -> str:
+    prompt = f"""
+    다음 게임 설명을 보고 세계관을 하나로 분류하세요.
+    가능한 선택지: 다크 판타지, 일반 판타지, SF, 현대, 역사, 기타
 
-# 사용자 질문을 준비
-question = "저렴한 SF 게임 추천해줘"
+    게임 설명:
+    {description}
 
-# chain에 질문을 던짐
-result = chain({"question": question})
+    결과는 이렇게 출력하세요:
+    세계관: <선택지>
+    """
+    response = ChatOpenAI().invoke(prompt)
+    return response.content.replace("세계관:", "").strip()
 
-# 답변 출력
-print(result["answer"])

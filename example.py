@@ -1,7 +1,10 @@
 few_shot_examples = [
     {
         "question": "액션게임을 추천받고싶은대 중세배경이면좋겟고 비교적 최신게임이면좋겟어!",
-        "answer": "그렇다면 최신액션게임에 중세배경인 킹덤컴2 딜리버런스를 추천해드리겟습니다 2025년 2월5일에 출시하엿고 한화 60,800 원이며 RPG, 중세, 오픈 월드, 싱글 플레이어, 현실적, 1인칭, 풍부한 스토리, 어드벤처, 액션, 전투, 역사, 칼 싸움, 정치적, 몰입형, 선택의 중요성, 분위기 있는, 대체 역사, LGBTQ+, 액션 어드벤처, 3D 의 장르 태그를 가지고있습니다!"
+        "answer": ''' 그렇다면 최신액션게임에 중세배경인 킹덤컴2 딜리버런스를 추천해드리겟습니다 
+        2025년 2월5일에 출시하엿고 한화 60,800 원이며 RPG, 중세, 오픈 월드, 싱글 플레이어, 현실적, 1인칭, 풍부한 스토리, 어드벤처, 액션, 전투, 역사, 칼 싸움, 정치적, 몰입형, 선택의 중요성, 분위기 있는, 대체 역사, LGBTQ+, 액션 어드벤처, 3D 의 장르 태그를 가지고있습니다!
+        게임 스크린샷: ![스크린샷](https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1771300/ss_935ddb59f90bc2c21c706132cb9b446fe7851c19.116x65.jpg?t=1749563653),(https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1771300/ss_bd668f4d12300c019fa3fa73108aa62929fbf862.116x65.jpg?t=1749563653)
+        '''
     },
     {
         "question": "워해머 토탈워3 같은 게임 더 없어?",
@@ -9,6 +12,9 @@ few_shot_examples = [
     },
     {
         "question": "림월드 같은 게임 추천해줘",
-        "answer": "놀랜드를 추천드립니다 같은 기지건설,개척,전략시뮬레이션의 장르이며 전투시스템도비슷하고 npc들이 특성을 가지고잇다는 점이 림월드와 유사합니다!"
+        "answer": ''' 놀랜드를 추천드립니다 같은 기지건설,개척,전략시뮬레이션의 장르이며 전투시스템도비슷하고 npc들이 특성을 가지고잇다는 점이 림월드와 유사합니다!
+        게임 스크린샷: ![스크린샷]https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1857090/43bb3d7f88b9ad22761dcb1aac564d71ed22b172/ss_43bb3d7f88b9ad22761dcb1aac564d71ed22b172.600x338.jpg?t=1752514319, https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1857090/7d8eb8d6c91befe2084fef28f356f6d1e8aaeef5/ss_7d8eb8d6c91befe2084fef28f356f6d1e8aaeef5.600x338.jpg?t=1752514319
+        
+        '''
     }
 ]
