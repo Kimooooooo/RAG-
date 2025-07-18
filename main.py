@@ -31,7 +31,7 @@ def load_vector_store():
         embedding_function=embeddings
     )
     return vectorstore
-def chain_prompt(vectorstore):
+def chain_prompt(vectorstore,session_id=None):
     llm = ChatOpenAI(model = 'gpt-4.1')
     output_parser = StrOutputParser()
 
@@ -59,15 +59,17 @@ def chain_prompt(vectorstore):
 
     chain = prompt | llm | output_parser
 
-    chain_with_memory = RunnableWithMessageHistory(chain,lambda session_id:ConversationBufferMemory(
-        memory_key='history',
-        return_messages=True,
-        chat_memory=StreamlitChatMessageHistory(key=f"chat_history_{session_id}")
-    ),
-    input_messages_key = 'question', # 사용자 입력키
-    history_messages_key = 'history'
+    def get_memory(session_id):
+        # StreamlitChatMessageHistory를 직접 반환
+        return StreamlitChatMessageHistory(key=f"chat_history_{session_id}")
+
+    chain_with_memory = RunnableWithMessageHistory(
+        chain,
+        get_memory,
+        input_messages_key="question",
+        history_messages_key="history"
     )
-    return chain_with_memory ,compressor_retriever
+    return chain_with_memory, compressor_retriever
 
 def classify_worldview(description: str) -> str:
     prompt = f"""

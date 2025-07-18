@@ -15,7 +15,7 @@ if 'vectorstore' not in st.session_state:
     st.session_state.vectorstore = load_vector_store() #벡터함수를 벡터DB사용 
 
 if 'chain' not in st.session_state:
-    st.session_state.chain,st.session_state.retriever = chain_prompt(st.session_state.vectorstore) #체인함수가져와서 chain 한 llm ,프롬포트 ,파서 기능을 사용함,retriever역시 따로 리터햇기때문에 지정해줘야함
+    st.session_state.chain,st.session_state.retriever = chain_prompt(st.session_state.vectorstore,session_id=st.session_state.session_id) #체인함수가져와서 chain 한 llm ,프롬포트 ,파서 기능을 사용함,retriever역시 따로 리터햇기때문에 지정해줘야함
 
 if 'all_memory' not in st.session_state: #모든 대화기록 기억
     st.session_state.all_memory = {}
@@ -62,9 +62,13 @@ query = st.text_input("🎤 어떤 게임을 찾고 계신가요?", placeholder=
 if query and not candidate_games.empty:
     # 5개 정도만 벡터 유사도 검색
     context = "\n".join(candidate_games["new_description"].fillna("").tolist()[:5])
+    print(query)
+    print(context)
+    
     response = st.session_state.chain.invoke({
         "question": query,
         "context": context,
+        
         
     },
     config = {'configurable' : {'session_id':st.session_state.session_id}})
