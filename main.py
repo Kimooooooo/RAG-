@@ -2,24 +2,22 @@ from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_chroma import Chroma
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
-from langchain_community.cache import SQLiteCache
+from langchain_community.cache import InMemoryCache
 from langchain_core.globals import set_llm_cache
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import LLMChainExtractor, DocumentCompressorPipeline
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_transformers.long_context_reorder import LongContextReorder
-from langchain.retrievers import ParentDocumentRetriever
-from langchain.storage import LocalFileStore, create_kv_docstore
-from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain.retrievers.document_compressors import LLMChainExtractor, DocumentCompressorPipeline
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
+import pandas as pd
 import os
 from example import few_shot_examples
 
-set_llm_cache(SQLiteCache("chat_cache.db"))
+set_llm_cache(InMemoryCache())
 
 api = os.getenv('OPENAI_API_KEY')
 
@@ -41,7 +39,7 @@ def chain_prompt(vectorstore,session_id=None):
         tuple_fewshot_example.append(('ai',example['answer']))
 
     prompt = ChatPromptTemplate.from_messages([
-        ('system','당신은 게임추천 전문가이며 다음 예시를 참조하여 뒤에는 게임의 장르,세계관,가격,설명 요약해서 같이 대답하고 게임의 스크린샷을 보여주세요'),
+        ('system','당신은 게임추천전문가입니다 참고문서를 활용하여 게임의 정보들을 보여줍니다 각 게임에는 스크린샷 주소가잇으며 주소가아닌 스크린샷으로 사용자에게 markdown형식으로 보여줍니다'),
         *tuple_fewshot_example,
         MessagesPlaceholder(variable_name='history'),
         ('human',"질문:{question}\n\n참고 문서:\n{context}")
